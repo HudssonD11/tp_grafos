@@ -21,6 +21,16 @@ public class Grafo
         }
     }
 
+    public void addAresta(int v1, int v2)
+    {
+        this.lista.addAresta(v1, v2);
+    }
+
+    public void removeAresta(int v1, int v2)
+    {
+        this.lista.removeAresta(v1, v2);
+    }
+
     public String toString() 
     {
         // StringBuilder resp = new StringBuilder();
@@ -28,7 +38,7 @@ public class Grafo
     }
 }
 
-class MatrizAdjacencia
+class MatrizAdjacencia implements ImplementacaoGrafo
 {
     private boolean [][] arestas;
 
@@ -36,11 +46,41 @@ class MatrizAdjacencia
     {
         arestas = new boolean [v][v];
     }
+
+    @Override
+    public void addAresta(int v1, int v2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addAresta'");
+    }
+
+    @Override
+    public void removeAresta(int v1, int v2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeAresta'");
+    }
+
+    @Override
+    public void setPeso(int v1, int v2, int peso) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPeso'");
+    }
+
+    @Override
+    public void setNome(int v1, int v2, String nome) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setNome'");
+    }
+
+    @Override
+    public boolean existeAresta(int v1, int v2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'existeAresta'");
+    }
 }
 
-class ListaAdjacencia
+class ListaAdjacencia implements ImplementacaoGrafo
 {
-    private List lista []; 
+    private List<ArestaLista> lista []; 
     private int n;
 
     public ListaAdjacencia(int v)
@@ -50,38 +90,45 @@ class ListaAdjacencia
 
         for(int i=0; i<n; i++)
         {
-            lista[i] = new LinkedList<Integer>();
+            lista[i] = new LinkedList<ArestaLista>();
         }
     }
 
+    @Override
     public void addAresta(int v1, int v2) 
     {
-        if(v1 < n && v2 < n)
+        if(v1 < n && v2 < n && !existeAresta(v1, v2))
         {
-            if(!lista[v1].contains(v2))
-            {
-                lista[v1].add(v2);
-            }
-            if(!lista[v2].contains(v1))
-            {
-                lista[v2].add(v1);
-            }
+            ArestaLista tmp1 = new ArestaLista(v1);
+            ArestaLista tmp2 = new ArestaLista(v2);
+            lista[v1].add(tmp2);
+            lista[v2].add(tmp1);
         }
     }
 
+    @Override
     public void removeAresta(int v1, int v2)
+    {
+        if(v1 < n && v2 < n && existeAresta(v1, v2))
+        {
+            lista[v1].remove(indexOf(v1, v2));
+            lista[v2].remove(indexOf(v2, v1));
+        }
+    }
+
+    private int indexOf(int v1, int v2)
     {
         if(v1 < n && v2 < n)
         {
-            if(lista[v1].contains(v2))
+            for(int i=0; i<lista[v1].size(); i++)
             {
-                lista[v1].remove(lista[v1].indexOf(v2));
-            }
-            if(lista[v2].contains(v1))
-            {
-                lista[v2].remove(lista[v2].indexOf(v1));
+                if(lista[v1].get(i).getVertice() == v2)
+                {
+                    return i;
+                }
             }
         }
+        return -1;
     }
 
     @SuppressWarnings("unchecked")
@@ -90,56 +137,85 @@ class ListaAdjacencia
         StringBuilder resp = new StringBuilder();
         for(int i=0; i<n; i++)
         {
-            resp.append(i + " : ");
-            resp.append(lista[i].toString() + "\n");
+            resp.append(i + " : [");
+            for(int j=0; j<lista[i].size(); j++)
+            {
+                resp.append(lista[i].get(j).toString() + ", ");
+            }
+            resp.append("]\n");
         }
-        return resp.toString();
+        return resp.toString().replace(", ]", "]");
+    }
+
+    @Override
+    public void setPeso(int v1, int v2, int peso) {
+        throw new UnsupportedOperationException("Unimplemented method 'setPeso'");
+    }
+
+    @Override
+    public void setNome(int v1, int v2, String nome) {
+        throw new UnsupportedOperationException("Unimplemented method 'setNome'");
+    }
+
+    @Override
+    public boolean existeAresta(int v1, int v2) {
+        if(v1 < n && v2 < n)
+        {
+            for (int i=0; i<lista[v1].size(); i++) 
+            {
+                if(lista[v1].get(i).getVertice() == v2) 
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 
-class Vertice
+class Vertice 
 {
-    private int valor;
-    private String rotulo;
+    private int peso;
+    private String nome;
 
     public Vertice()
     {
 
     }
 
-    public Vertice(int valor)
+    public Vertice(int peso)
     {
-        this.valor = valor;
+        this.peso = peso;
     }
 
-    public Vertice(String rotulo)
+    public Vertice(String nome)
     {
-        this.rotulo = rotulo;
+        this.nome = nome;
     }
 
-    public Vertice(String rotulo, int valor)
+    public Vertice(String nome, int peso)
     {
-        this.rotulo = rotulo;
-        this.valor = valor;
+        this.nome = nome;
+        this.peso = peso;
     }
 
-    void setValor(int valor)
+    void setPeso(int peso)
     {
-        this.valor = valor;
+        this.peso = peso;
     }
 
-    int getValor()
+    int getPeso()
     {
-        return this.valor;
+        return this.peso;
     }
 
-    void setRotulo(String rotulo)
+    void setNome(String nome)
     {
-        this.rotulo = rotulo;
+        this.nome = nome;
     }
 
-    String getRotulo()
+    String getNome()
     {
-        return this.rotulo;
+        return this.nome;
     }
 }
