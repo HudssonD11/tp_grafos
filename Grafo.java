@@ -148,13 +148,35 @@ class ListaAdjacencia implements ImplementacaoGrafo
     }
 
     @Override
-    public void setPeso(int v1, int v2, int peso) {
-        throw new UnsupportedOperationException("Unimplemented method 'setPeso'");
+    public void setPeso(int v1, int v2, int peso) 
+    {
+        if(existeAresta(v1, v2))
+        {
+            getAresta(v1, v2).setPeso(peso);
+            getAresta(v2, v1).setPeso(peso);
+        }
+    }
+
+    private ArestaLista getAresta(int v1, int v2) 
+    {
+        ArestaLista resp = null;
+        for(int i=0; i<lista[v1].size(); i++)
+        {
+            if(lista[v1].get(i).getVertice() == v2)
+            {
+                resp = lista[v1].get(i);
+            }
+        }
+        return resp;
     }
 
     @Override
     public void setNome(int v1, int v2, String nome) {
-        throw new UnsupportedOperationException("Unimplemented method 'setNome'");
+        if(existeAresta(v1, v2))
+        {
+            getAresta(v1, v2).setNome(nome);
+            getAresta(v2, v1).setNome(nome);
+        }
     }
 
     @Override
