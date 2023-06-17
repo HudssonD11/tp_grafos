@@ -76,7 +76,7 @@ public class Grafo {
 
     public boolean completo()
     {
-        return implementacao.getQuantidade() == n;
+        return implementacao.getQuantidade() == (n * (n-1))/2;
     }
 
     public void setNomeVertice(int v, String nome)
@@ -177,7 +177,7 @@ class MatrizAdjacencia implements ImplementacaoGrafo {
     }
 
     private boolean validVertices(int v1, int v2) {
-        return (v1 < n && v2 < n);
+        return (v1 < n && v2 < n && v1 != v2);
     }
 
     @Override
@@ -258,7 +258,8 @@ class ListaAdjacencia implements ImplementacaoGrafo {
     private List<ArestaLista> lista[];
     private int arestas_n;
     private int n;
-
+    
+    @SuppressWarnings("unchecked")
     public ListaAdjacencia(int v) {
         this.n = v;
         this.arestas_n = 0;
@@ -270,7 +271,7 @@ class ListaAdjacencia implements ImplementacaoGrafo {
     }
 
     private boolean validVertices(int v1, int v2) {
-        return (v1 < n && v2 < n);
+        return (v1 < n && v2 < n && v1 != v2);
     }
 
     @Override
@@ -304,7 +305,6 @@ class ListaAdjacencia implements ImplementacaoGrafo {
         return -1;
     }
 
-    @SuppressWarnings("unchecked")
     public String toString() {
         StringBuilder resp = new StringBuilder();
         for (int i = 0; i < n; i++) {
