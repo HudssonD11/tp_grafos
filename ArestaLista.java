@@ -39,7 +39,8 @@ class Aresta
 
     public Aresta() 
     {
-
+        peso = 0;
+        nome = null;
     }
 
     public void setPeso(int peso)
