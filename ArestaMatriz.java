@@ -10,7 +10,7 @@ public class ArestaMatriz extends Aresta
     private void reset()
     {
         setNome(null);
-        setPeso(0);
+        setPeso(null);
     }
 
     public void setExiste(boolean existe)

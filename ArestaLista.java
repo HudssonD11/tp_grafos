@@ -34,7 +34,7 @@ public class ArestaLista extends Aresta
 
 class Aresta 
 {
-    private int peso;
+    private Integer peso;
     private String nome;
 
     public Aresta() 
@@ -43,12 +43,12 @@ class Aresta
         nome = null;
     }
 
-    public void setPeso(int peso)
+    public void setPeso(Integer peso)
     {
         this.peso = peso;
     }
 
-    public int getPeso()
+    public Integer getPeso()
     {
         return peso;
     }
