@@ -2,10 +2,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.Arrays;
-import java.util.StringTokenizer;
-
-import javax.swing.plaf.synth.SynthDesktopIconUI;
 
 public class csv {
 
@@ -49,6 +45,13 @@ public class csv {
       return dm;
    }
 
+   /**
+    * sumLines
+    * Este método calcula a soma dos elementos de cada linha de uma matriz
+    * 
+    * @param W Uma matriz de números reais.
+    * @return Um vetor de contendo a soma dos elementos de cada linha da matriz W.
+    */
    public static double[] sumLines(double[][] W) {
       double[] sum_lines = new double[W.length];
       for (int i = 0; i < W.length; i++) {
@@ -59,23 +62,42 @@ public class csv {
       return sum_lines;
    }
 
+   /**
+    * calculate_S
+    * Esse método é utilizado para calcular a matriz de similaridade entre as
+    * linhas da matriz W, normalizando-as pelo seu comprimento.
+    * 
+    * @param W Matriz a ser calculada a soma das linhas
+    * @return D o resultado do método
+    */
+
    public static double[][] calculate_S(double[][] W) {
       double[] d = sumLines(W);
       int nd = d.length;
       double[][] D = new double[nd][nd];
-      for(int i=0; i<nd; i++) {
-         for(int j=0; j<nd; j++) {
+      for (int i = 0; i < nd; i++) {
+         for (int j = 0; j < nd; j++) {
             D[i][j] = Math.sqrt(d[i] * d[j]);
          }
       }
-      for(int i=0; i<nd; i++) {
-         for(int j=0; j<nd; j++) {
+      for (int i = 0; i < nd; i++) {
+         for (int j = 0; j < nd; j++) {
             D[i][j] = (D[i][j] != 0) ? W[i][j] / D[i][j] : 0;
          }
       }
       return D;
    }
 
+   /**
+    * rbf
+    * Esse método é utilizado para calcular os pesos de uma rede neural baseada em
+    * funções de base radial (RBF), que são funções que dependem apenas da
+    * distância entre os pontos de entrada e os centros das funções.
+    * 
+    * @param X     Matriz a ser calculado os pesos
+    * @param sigma
+    * @return W resultado da função
+    */
    public static double[][] rbf(double[][] X, double sigma) {
       // Obtém o número de linhas e colunas do array X
       int n = X.length;
@@ -96,6 +118,14 @@ public class csv {
       return W;
    }
 
+   /**
+    * fillDiagonal
+    * Esse método é usado para modificar uma matriz quadrada, substituindo os
+    * elementos da sua diagonal principal por um valor parametrizavel.
+    * 
+    * @param X     Matriz
+    * @param value Valor desejado
+    */
    public static void fillDiagonal(double[][] X, double value) {
       // Obtém o número de linhas e colunas do array X
       int n = X.length;
@@ -114,13 +144,23 @@ public class csv {
       }
    }
 
+   /**
+    * mult_matriz
+    * Esse método pode ser usado para calcular o produto de duas matrizes reais,
+    * multiplicando cada elemento pelo fator alfa.
+    * 
+    * @param a    Matriz
+    * @param b    Matriz
+    * @param alfa Fator alfa
+    * @return Matriz resultante
+    */
    private static double[][] mult_matriz(double[][] a, double[][] b, double alfa) {
-      if(a[0].length == b.length) {
+      if (a[0].length == b.length) {
          double tmp = 0;
          double[][] c = new double[a.length][b[0].length];
-         for(int linha = 0; linha<a.length; linha++){
-            for(int coluna = 0; coluna<b[0].length; coluna++){
-               for(int aux = 0; aux<a[0].length; aux++){
+         for (int linha = 0; linha < a.length; linha++) {
+            for (int coluna = 0; coluna < b[0].length; coluna++) {
+               for (int aux = 0; aux < a[0].length; aux++) {
                   tmp += a[linha][aux] * b[aux][coluna];
                }
                c[linha][coluna] = tmp * alfa;
@@ -129,27 +169,35 @@ public class csv {
          }
          return c;
       }
-      System.out.println(a[0].length);
-      System.out.println(b.length);
       return null;
    }
 
+   /**
+    * Esse método é usado para calcular a iteração de uma função linear sobre uma
+    * matriz de entrada, usando um fator de amortecimento alfa.
+    * 
+    * @param S       Matriz resultante do metodo calculate
+    * @param Y_input Matriz de similaridade
+    * @param alfa    Fator alfa
+    * @param iter    Quantidade de iterações
+    * @return Matriz resultante
+    */
    public static double[][] iteration(double[][] S, double[][] Y_input, double alfa, int iter) {
       double[][] resp = Y_input;
-      for(int it=0; it<iter; it++){
+      for (int it = 0; it < iter; it++) {
 
          double[][] tmp = mult_matriz(S, resp, alfa);
-         if(tmp == null){
+         if (tmp == null) {
             System.out.println("null");
          }
          double[][] y_tmp = new double[Y_input.length][Y_input[0].length];
-         for(int i=0; i<y_tmp.length; i++) {
-            for(int j=0; j<y_tmp[0].length; j++){
+         for (int i = 0; i < y_tmp.length; i++) {
+            for (int j = 0; j < y_tmp[0].length; j++) {
                y_tmp[i][j] = Y_input[i][j] * (1 - alfa);
             }
          }
-         for(int i=0; i<tmp.length; i++) {
-            for(int j=0; j<tmp[0].length; j++){
+         for (int i = 0; i < tmp.length; i++) {
+            for (int j = 0; j < tmp[0].length; j++) {
                tmp[i][j] += y_tmp[i][j];
             }
          }
@@ -159,15 +207,34 @@ public class csv {
       return resp;
    }
 
-   public static void criaCsv(double [][] array, int[] labels) throws Exception {
+   /**
+    * criaCsv
+    * Este método cria um arquivo CSV a partir de uma matriz de
+    * números reais e um vetor de inteiros.
+    * 
+    * @param array  Uma matriz de números reais.
+    * @param labels Um vetor de inteiros 
+    * @throws Exception Se ocorrer algum erro ao escrever o arquivo CSV.
+    */
+
+   public static void criaCsv(double[][] array, int[] labels) throws Exception {
       BufferedWriter writer = new BufferedWriter(new FileWriter("results.csv"));
       writer.write("x1,x2,y\n");
-      for(int i=0; i<array.length; i++){
+      for (int i = 0; i < array.length; i++) {
          String tmp = array[i][0] + "," + array[i][1] + "," + labels[i] + "\n";
          writer.write(tmp);
       }
       writer.close();
    }
+
+   /**
+    * diag
+    * Este método cria uma matriz diagonal a partir de um array.
+    * 
+    * @param n Um array de números reais.
+    * @return Uma matriz diagonal cujos elementos da diagonal principal são os
+    *         elementos do array n.
+    */
 
    public static double[][] diag(double[] n) {
       // Declarando o tipo da variável D
@@ -179,6 +246,7 @@ public class csv {
       }
       return D;
    }
+
    public static void main(String[] args) throws Exception {
       // abrir o arquivo CSV
       BufferedReader reader = new BufferedReader(new FileReader("dados.csv"));
@@ -197,75 +265,30 @@ public class csv {
       linha = reader.readLine();
       while (linha != null) {
          // separar os valores por vírgula
-         // StringTokenizer tokens = new StringTokenizer(linha, ",");
-         String tmp [] = linha.split(",");
-         // inicializa o obj X
+         String tmp[] = linha.split(",");
          array[i][0] = Double.parseDouble(tmp[0]);
          array[i][1] = Double.parseDouble(tmp[1]);
          Y[i++] = Integer.parseInt(tmp[2]);
          linha = reader.readLine();
-         // imprimir os valores na tela
-/*          while (tokens.hasMoreTokens()) {
-            // System.out.println("i = "+i+" j = "+j);
-            if (first == true) {
-               tokens.nextToken();
-
-            } else {
-               if (index == 0) {
-                  array[i][j] = Double.parseDouble(tokens.nextToken());
-                  System.out.println(array[i][j]);
-
-               } else if (index == 1) {
-                  array[i][j] = Double.parseDouble(tokens.nextToken());
-               } else {
-                  Y[i] = Double.parseDouble(tokens.nextToken());
-               }
-            }
-            j++;
-            index++;
-         }
-         first = false;
-         index = 0;
-         j = 0;
-         i++;
-         // ler a próxima linha
-         linha = reader.readLine();
-*/      }
-      // System.out.println("x0 = "+array[0][0]+" x1 = "+array[0][1]);
-      // System.out.println("x0 = "+array[1][0]+" x1 = "+array[1][1]);
+      }
       // fechar o arquivo
       reader.close();
-      for(int k=0; k<n_labeled; k++)
-      {
-         // System.out.println((int)Y[k]);
-         Y_input[k][(int)Y[k]] = 1;
+      
+      for (int k = 0; k < n_labeled; k++) {
+         Y_input[k][(int) Y[k]] = 1;
       }
-      for(int k=0; k<n; k++){
-         // System.out.println(Y_input[k][0] + " " + Y_input[k][1]);
+      for (int k = 0; k < n; k++) {
       }
       double[][] dm = cdist(array, array);
-      /*
-       * System.out.println("Matriz de distâncias:");
-       * System.out.println(Arrays.deepToString(dm));
-       */
       double sigma = 0.2;
-      double[][] W  = rbf(dm, sigma);
+      double[][] W = rbf(dm, sigma);
       fillDiagonal(W, 0);
 
-      // double[][] matriz_diagonal = diag(W);
       double[][] S = calculate_S(W);
       double[][] iter = iteration(S, Y_input, 0.99, 5);
-      // double[][] iter = tmp;
-      // for(int k=0; k<2; k++){
-      //    tmp = iteration(iter, Y_input, 0.99);
-      //    iter = tmp;
-      // }
-      // for(int ii = 0; ii<iter.length; ii++){
-      //    System.out.println(iter[ii][0] + " " + iter[ii][1]);
-      // }
-      int [] labels = new int [n];
-      for(int ii=0; ii<n; ii++){
-         if(iter[ii][0] > iter[ii][1]) {
+      int[] labels = new int[n];
+      for (int ii = 0; ii < n; ii++) {
+         if (iter[ii][0] > iter[ii][1]) {
             labels[ii] = 0;
          } else {
             labels[ii] = 1;
@@ -273,8 +296,8 @@ public class csv {
       }
       criaCsv(array, labels);
       double acertos = 0;
-      for(int ii=0; ii<n; ii++){
-         if(labels[ii] == (int)Y[ii]) {
+      for (int ii = 0; ii < n; ii++) {
+         if (labels[ii] == (int) Y[ii]) {
             acertos++;
          }
       }
