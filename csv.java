@@ -181,7 +181,7 @@ public class csv {
    }
    public static void main(String[] args) throws Exception {
       // abrir o arquivo CSV
-      BufferedReader reader = new BufferedReader(new FileReader("moons.csv"));
+      BufferedReader reader = new BufferedReader(new FileReader("dados.csv"));
       // ler a primeira linha
       String linha = reader.readLine();
       int n = 1000;
@@ -271,7 +271,7 @@ public class csv {
             labels[ii] = 1;
          }
       }
-      // criaCsv(array, labels);
+      criaCsv(array, labels);
       double acertos = 0;
       for(int ii=0; ii<n; ii++){
          if(labels[ii] == (int)Y[ii]) {
