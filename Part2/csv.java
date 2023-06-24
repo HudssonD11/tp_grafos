@@ -5,6 +5,19 @@ import java.io.FileWriter;
 
 public class csv {
 
+   /**
+    * Este método calcula a distância euclidiana entre cada par de pontos de duas
+    * matrizes de números reais.
+    * 
+    * @param X Uma matriz de números reais representando um conjunto de
+    *          pontos.
+    * @param Y Uma matriz de números reais representando outro conjunto
+    *          de pontos.
+    * @return Uma matriz de números reais contendo a distância entre
+    *         cada par de pontos dos arrays X e Y.
+    * @throws IllegalArgumentException Se os arrays X e Y tiverem um número
+    *                                  diferente de colunas.
+    */
    public static double[][] cdist(double[][] X, double[][] Y) {
       // Obtém o número de linhas e colunas dos arrays X e Y
       int n = X.length;
@@ -213,7 +226,7 @@ public class csv {
     * números reais e um vetor de inteiros.
     * 
     * @param array  Uma matriz de números reais.
-    * @param labels Um vetor de inteiros 
+    * @param labels Um vetor de inteiros
     * @throws Exception Se ocorrer algum erro ao escrever o arquivo CSV.
     */
 
@@ -273,18 +286,19 @@ public class csv {
       }
       // fechar o arquivo
       reader.close();
-      
+
       for (int k = 0; k < n_labeled; k++) {
          Y_input[k][(int) Y[k]] = 1;
       }
-      for (int k = 0; k < n; k++) {
-      }
+
+      // Primeiro passo
       double[][] dm = cdist(array, array);
       double sigma = 0.2;
       double[][] W = rbf(dm, sigma);
       fillDiagonal(W, 0);
-
+      // Segundo passo
       double[][] S = calculate_S(W);
+      // Terceiro e quarto passo
       double[][] iter = iteration(S, Y_input, 0.99, 5);
       int[] labels = new int[n];
       for (int ii = 0; ii < n; ii++) {
